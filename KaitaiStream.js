@@ -798,6 +798,18 @@ KaitaiStream.arrayToString = function(arr, encoding) {
   }
 }
 
+KaitaiStream.processZlib = function(buf) {
+  if (typeof KaitaiStream.zlib === 'undefined')
+    KaitaiStream.zlib = require('zlib');
+  if (buf instanceof Uint8Array) {
+    var b = new Buffer(buf.buffer);
+  } else {
+    var b = buf;
+  }
+  var r = KaitaiStream.zlib.inflateSync(b);
+  return r;
+}
+
 // Export KaitaiStream for amd environments
 if (typeof define === 'function' && define.amd) {
   define('KaitaiStream', [], function() {
