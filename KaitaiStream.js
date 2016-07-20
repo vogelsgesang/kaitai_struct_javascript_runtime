@@ -798,6 +798,28 @@ KaitaiStream.arrayToString = function(arr, encoding) {
   }
 }
 
+KaitaiStream.processXorOne = function(data, key) {
+  var r = new Uint8Array(data.length);
+  var dl = data.length;
+  for (var i = 0; i < dl; i++)
+    r[i] = data[i] ^ key;
+  return r;
+}
+
+KaitaiStream.processXorMany = function(data, key) {
+  var r = new Uint8Array(data.length);
+  var dl = data.length;
+  var kl = key.length;
+  var ki = 0;
+  for (var i = 0; i < data.length; i++) {
+    r[i] = data[i] ^ key[ki];
+    ki++;
+    if (ki >= kl)
+      ki = 0;
+  }
+  return r;
+}
+
 KaitaiStream.processZlib = function(buf) {
   if (typeof KaitaiStream.zlib === 'undefined')
     KaitaiStream.zlib = require('zlib');
