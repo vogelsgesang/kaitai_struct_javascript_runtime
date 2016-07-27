@@ -578,6 +578,36 @@ KaitaiStream.prototype.readU4be = function(e) {
 // Signed
 // ========================================================================
 
+// # Floating point numbers
+
+// ## Big endian
+
+KaitaiStream.prototype.readF4be = function(e) {
+  var v = this._dataView.getFloat32(this.position);
+  this.position += 4;
+  return v;
+};
+
+KaitaiStream.prototype.readF8be = function(e) {
+  var v = this._dataView.getFloat64(this.position);
+  this.position += 8;
+  return v;
+};
+
+// ## Little endian
+
+KaitaiStream.prototype.readF4le = function(e) {
+  var v = this._dataView.getFloat32(this.position, 1);
+  this.position += 4;
+  return v;
+};
+
+KaitaiStream.prototype.readF8le = function(e) {
+  var v = this._dataView.getFloat64(this.position, 1);
+  this.position += 8;
+  return v;
+};
+
 /**
   Reads a 32-bit float from the KaitaiStream with the desired endianness.
 
