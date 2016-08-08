@@ -131,8 +131,24 @@ Object.defineProperty(KaitaiStream.prototype, 'size',
   }});
 
 // ========================================================================
-// Unsigned
+// Integer numbers
 // ========================================================================
+
+// ------------------------------------------------------------------------
+// Signed
+// ------------------------------------------------------------------------
+
+// ........................................................................
+// Big-endian
+// ........................................................................
+
+// ........................................................................
+// Little-endian
+// ........................................................................
+
+// ------------------------------------------------------------------------
+// Unsigned
+// ------------------------------------------------------------------------
 
 /**
   Reads an 8-bit unsigned int from the KaitaiStream.
@@ -144,27 +160,9 @@ KaitaiStream.prototype.readU1 = function() {
   return v;
 };
 
-/**
-  Reads a 16-bit little-endian unsigned int from the KaitaiStream.
-  @return {number} The read number.
- */
-KaitaiStream.prototype.readU2le = function(e) {
-  var v = this._dataView.getUint16(this.position, 1);
-  this.position += 2;
-  return v;
-};
-
-/**
-  Reads a 32-bit little-endian unsigned int from the KaitaiStream.
-  @return {number} The read number.
- */
-KaitaiStream.prototype.readU4le = function(e) {
-  var v = this._dataView.getUint32(this.position, 1);
-  this.position += 4;
-  return v;
-};
-
-// TODO: do something about 64-bit integers
+// ........................................................................
+// Big-endian
+// ........................................................................
 
 /**
   Reads a 16-bit big-endian unsigned int from the KaitaiStream.
@@ -182,6 +180,32 @@ KaitaiStream.prototype.readU2be = function(e) {
  */
 KaitaiStream.prototype.readU4be = function(e) {
   var v = this._dataView.getUint32(this.position);
+  this.position += 4;
+  return v;
+};
+
+// TODO: do something about 64-bit integers
+
+// ........................................................................
+// Little-endian
+// ........................................................................
+
+/**
+  Reads a 16-bit little-endian unsigned int from the KaitaiStream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readU2le = function(e) {
+  var v = this._dataView.getUint16(this.position, 1);
+  this.position += 2;
+  return v;
+};
+
+/**
+  Reads a 32-bit little-endian unsigned int from the KaitaiStream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readU4le = function(e) {
+  var v = this._dataView.getUint32(this.position, 1);
   this.position += 4;
   return v;
 };
