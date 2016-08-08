@@ -21,18 +21,6 @@ KaitaiStream = function(arrayBuffer, byteOffset) {
 };
 KaitaiStream.prototype = {};
 
-/* Fix for Opera 12 not defining BYTES_PER_ELEMENT in typed array prototypes. */
-if (Uint8Array.prototype.BYTES_PER_ELEMENT === undefined) {
-    Uint8Array.prototype.BYTES_PER_ELEMENT = Uint8Array.BYTES_PER_ELEMENT;
-    Int8Array.prototype.BYTES_PER_ELEMENT = Int8Array.BYTES_PER_ELEMENT;
-    Uint8ClampedArray.prototype.BYTES_PER_ELEMENT = Uint8ClampedArray.BYTES_PER_ELEMENT;
-    Uint16Array.prototype.BYTES_PER_ELEMENT = Uint16Array.BYTES_PER_ELEMENT;
-    Int16Array.prototype.BYTES_PER_ELEMENT = Int16Array.BYTES_PER_ELEMENT;
-    Uint32Array.prototype.BYTES_PER_ELEMENT = Uint32Array.BYTES_PER_ELEMENT;
-    Int32Array.prototype.BYTES_PER_ELEMENT = Int32Array.BYTES_PER_ELEMENT;
-    Float64Array.prototype.BYTES_PER_ELEMENT = Float64Array.BYTES_PER_ELEMENT;
-}
-
 /**
   Virtual byte length of the KaitaiStream backing buffer.
   Updated to be max of original buffer size and last written size.
@@ -247,72 +235,6 @@ KaitaiStream.prototype.readF8le = function(e) {
   @type {boolean}
  */
 KaitaiStream.endianness = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
-
-/**
-  Copies byteLength bytes from the src buffer at srcOffset to the
-  dst buffer at dstOffset.
-
-  @param {Object} dst Destination ArrayBuffer to write to.
-  @param {number} dstOffset Offset to the destination ArrayBuffer.
-  @param {Object} src Source ArrayBuffer to read from.
-  @param {number} srcOffset Offset to the source ArrayBuffer.
-  @param {number} byteLength Number of bytes to copy.
- */
-KaitaiStream.memcpy = function(dst, dstOffset, src, srcOffset, byteLength) {
-  var dstU8 = new Uint8Array(dst, dstOffset, byteLength);
-  var srcU8 = new Uint8Array(src, srcOffset, byteLength);
-  dstU8.set(srcU8);
-};
-
-/**
-  Converts array to native endianness in-place.
-
-  @param {Object} array Typed array to convert.
-  @param {boolean} arrayIsLittleEndian True if the data in the array is
-                                       little-endian. Set false for big-endian.
-  @return {Object} The converted typed array.
- */
-KaitaiStream.arrayToNative = function(array, arrayIsLittleEndian) {
-  if (arrayIsLittleEndian == this.endianness) {
-    return array;
-  } else {
-    return this.flipArrayEndianness(array);
-  }
-};
-
-/**
-  Converts native endianness array to desired endianness in-place.
-
-  @param {Object} array Typed array to convert.
-  @param {boolean} littleEndian True if the converted array should be
-                                little-endian. Set false for big-endian.
-  @return {Object} The converted typed array.
- */
-KaitaiStream.nativeToEndian = function(array, littleEndian) {
-  if (this.endianness == littleEndian) {
-    return array;
-  } else {
-    return this.flipArrayEndianness(array);
-  }
-};
-
-/**
-  Flips typed array endianness in-place.
-
-  @param {Object} array Typed array to flip.
-  @return {Object} The converted typed array.
- */
-KaitaiStream.flipArrayEndianness = function(array) {5
-  var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
-  for (var i=0; i<array.byteLength; i+=array.BYTES_PER_ELEMENT) {
-    for (var j=i+array.BYTES_PER_ELEMENT-1, k=i; j>k; j--, k++) {
-      var tmp = u8[k];
-      u8[k] = u8[j];
-      u8[j] = tmp;
-    }
-  }
-  return array;
-};
 
 // ========================================================================
 // Byte arrays
