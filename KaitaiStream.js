@@ -138,20 +138,72 @@ Object.defineProperty(KaitaiStream.prototype, 'size',
 // Signed
 // ------------------------------------------------------------------------
 
+/**
+  Reads an 8-bit signed int from the stream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readS1 = function() {
+  var v = this._dataView.getInt8(this.position);
+  this.position += 1;
+  return v;
+};
+
 // ........................................................................
 // Big-endian
 // ........................................................................
 
+/**
+  Reads a 16-bit big-endian signed int from the stream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readS2be = function(e) {
+  var v = this._dataView.getInt16(this.position);
+  this.position += 2;
+  return v;
+};
+
+/**
+  Reads a 32-bit big-endian signed int from the stream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readS4be = function(e) {
+  var v = this._dataView.getInt32(this.position);
+  this.position += 4;
+  return v;
+};
+
+// TODO: do something about 64-bit integers
+
 // ........................................................................
 // Little-endian
 // ........................................................................
+
+/**
+  Reads a 16-bit little-endian signed int from the stream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readS2le = function(e) {
+  var v = this._dataView.getInt16(this.position, 1);
+  this.position += 2;
+  return v;
+};
+
+/**
+  Reads a 32-bit little-endian signed int from the stream.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readS4le = function(e) {
+  var v = this._dataView.getInt32(this.position, 1);
+  this.position += 4;
+  return v;
+};
 
 // ------------------------------------------------------------------------
 // Unsigned
 // ------------------------------------------------------------------------
 
 /**
-  Reads an 8-bit unsigned int from the KaitaiStream.
+  Reads an 8-bit unsigned int from the stream.
   @return {number} The read number.
  */
 KaitaiStream.prototype.readU1 = function() {
@@ -165,7 +217,7 @@ KaitaiStream.prototype.readU1 = function() {
 // ........................................................................
 
 /**
-  Reads a 16-bit big-endian unsigned int from the KaitaiStream.
+  Reads a 16-bit big-endian unsigned int from the stream.
   @return {number} The read number.
  */
 KaitaiStream.prototype.readU2be = function(e) {
@@ -175,7 +227,7 @@ KaitaiStream.prototype.readU2be = function(e) {
 };
 
 /**
-  Reads a 32-bit big-endian unsigned int from the KaitaiStream.
+  Reads a 32-bit big-endian unsigned int from the stream.
   @return {number} The read number.
  */
 KaitaiStream.prototype.readU4be = function(e) {
@@ -191,7 +243,7 @@ KaitaiStream.prototype.readU4be = function(e) {
 // ........................................................................
 
 /**
-  Reads a 16-bit little-endian unsigned int from the KaitaiStream.
+  Reads a 16-bit little-endian unsigned int from the stream.
   @return {number} The read number.
  */
 KaitaiStream.prototype.readU2le = function(e) {
@@ -201,7 +253,7 @@ KaitaiStream.prototype.readU2le = function(e) {
 };
 
 /**
-  Reads a 32-bit little-endian unsigned int from the KaitaiStream.
+  Reads a 32-bit little-endian unsigned int from the stream.
   @return {number} The read number.
  */
 KaitaiStream.prototype.readU4le = function(e) {
