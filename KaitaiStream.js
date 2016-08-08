@@ -42,15 +42,6 @@ if (Uint8Array.prototype.BYTES_PER_ELEMENT === undefined) {
 KaitaiStream.prototype._byteLength = 0;
 
 /**
-  Returns the byte length of the KaitaiStream object.
-  @type {number}
-  */
-Object.defineProperty(KaitaiStream.prototype, 'byteLength',
-  { get: function() {
-    return this._byteLength - this._byteOffset;
-  }});
-
-/**
   Set/get the backing ArrayBuffer of the KaitaiStream object.
   The setter updates the DataView to point to the new buffer.
   @type {Object}
@@ -127,7 +118,7 @@ KaitaiStream.prototype._trimAlloc = function() {
   @return {boolean} True if the seek pointer is at the end of the buffer.
   */
 KaitaiStream.prototype.isEof = function() {
-  return (this.position >= this.byteLength);
+  return (this.position >= this.size);
 };
 
 /**
@@ -138,9 +129,18 @@ KaitaiStream.prototype.isEof = function() {
   @return {null}
   */
 KaitaiStream.prototype.seek = function(pos) {
-  var npos = Math.max(0, Math.min(this.byteLength, pos));
+  var npos = Math.max(0, Math.min(this.size, pos));
   this.position = (isNaN(npos) || !isFinite(npos)) ? 0 : npos;
 };
+
+/**
+  Returns the byte length of the KaitaiStream object.
+  @type {number}
+  */
+Object.defineProperty(KaitaiStream.prototype, 'size',
+  { get: function() {
+    return this._byteLength - this._byteOffset;
+  }});
 
 // ========================================================================
 // Unsigned
@@ -241,30 +241,6 @@ KaitaiStream.prototype.readF8le = function(e) {
 };
 
 /**
-  Reads a 32-bit float from the KaitaiStream with the desired endianness.
-
-  @param {?boolean} e Endianness of the number.
-  @return {number} The read number.
- */
-KaitaiStream.prototype.readFloat32 = function(e) {
-  var v = this._dataView.getFloat32(this.position, e == null ? this.endianness : e);
-  this.position += 4;
-  return v;
-};
-
-/**
-  Reads a 64-bit float from the KaitaiStream with the desired endianness.
-
-  @param {?boolean} e Endianness of the number.
-  @return {number} The read number.
- */
-KaitaiStream.prototype.readFloat64 = function(e) {
-  var v = this._dataView.getFloat64(this.position, e == null ? this.endianness : e);
-  this.position += 8;
-  return v;
-};
-
-/**
   Native endianness. Either KaitaiStream.BIG_ENDIAN or KaitaiStream.LITTLE_ENDIAN
   depending on the platform endianness.
 
@@ -326,7 +302,7 @@ KaitaiStream.nativeToEndian = function(array, littleEndian) {
   @param {Object} array Typed array to flip.
   @return {Object} The converted typed array.
  */
-KaitaiStream.flipArrayEndianness = function(array) {
+KaitaiStream.flipArrayEndianness = function(array) {5
   var u8 = new Uint8Array(array.buffer, array.byteOffset, array.byteLength);
   for (var i=0; i<array.byteLength; i+=array.BYTES_PER_ELEMENT) {
     for (var j=i+array.BYTES_PER_ELEMENT-1, k=i; j>k; j--, k++) {
@@ -347,7 +323,7 @@ KaitaiStream.prototype.readBytes = function(len) {
 }
 
 KaitaiStream.prototype.readBytesFull = function() {
-  return this.mapUint8Array(this.byteLength - this.position);
+  return this.mapUint8Array(this.size - this.position);
 }
 
 // ========================================================================
@@ -371,7 +347,7 @@ KaitaiStream.prototype.readStrByteLimit = function(length, encoding) {
 };
 
 KaitaiStream.prototype.readStrz = function(encoding, terminator, include, consume, eosError) {
-  var blen = this.byteLength-this.position;
+  var blen = this.size - this.position;
   var u8 = new Uint8Array(this._buffer, this._byteOffset + this.position);
   for (var i = 0; i < blen && u8[i] != terminator; i++); // find first zero byte
   if (i == blen) {
@@ -471,8 +447,8 @@ KaitaiEOFError.prototype.constructor = KaitaiEOFError;
   @return {Object} Uint8Array to the KaitaiStream backing buffer.
   */
 KaitaiStream.prototype.mapUint8Array = function(length) {
-  if (this.position + length > this.byteLength) {
-    throw new KaitaiEOFError(length, this.byteLength - this.position);
+  if (this.position + length > this.size) {
+    throw new KaitaiEOFError(length, this.size - this.position);
   }
 
   var arr = new Uint8Array(this._buffer, this.byteOffset + this.position, length);
