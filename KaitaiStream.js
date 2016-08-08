@@ -188,247 +188,6 @@ KaitaiStream.prototype.isEof = function() {
 };
 
 /**
-  Maps an Int32Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Int32Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapInt32Array = function(length, e) {
-  this._realloc(length * 4);
-  var arr = new Int32Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 4;
-  return arr;
-};
-
-/**
-  Maps an Int16Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Int16Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapInt16Array = function(length, e) {
-  this._realloc(length * 2);
-  var arr = new Int16Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 2;
-  return arr;
-};
-
-/**
-  Maps an Int8Array into the KaitaiStream buffer.
-
-  Nice for quickly reading in data.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Int8Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapInt8Array = function(length) {
-  this._realloc(length * 1);
-  var arr = new Int8Array(this._buffer, this.byteOffset+this.position, length);
-  this.position += length * 1;
-  return arr;
-};
-
-/**
-  Maps a Uint32Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Uint32Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapUint32Array = function(length, e) {
-  this._realloc(length * 4);
-  var arr = new Uint32Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 4;
-  return arr;
-};
-
-/**
-  Maps a Uint16Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Uint16Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapUint16Array = function(length, e) {
-  this._realloc(length * 2);
-  var arr = new Uint16Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 2;
-  return arr;
-};
-
-/**
-  Maps a Uint8Array into the KaitaiStream buffer.
-
-  Nice for quickly reading in data.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Uint8Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapUint8Array = function(length) {
-  this._realloc(length * 1);
-  var arr = new Uint8Array(this._buffer, this.byteOffset+this.position, length);
-  this.position += length * 1;
-  return arr;
-};
-
-/**
-  Maps a Float64Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Float64Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapFloat64Array = function(length, e) {
-  this._realloc(length * 8);
-  var arr = new Float64Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 8;
-  return arr;
-};
-
-/**
-  Maps a Float32Array into the KaitaiStream buffer, swizzling it to native
-  endianness in-place. The current offset from the start of the buffer needs to
-  be a multiple of element size, just like with typed array views.
-
-  Nice for quickly reading in data. Warning: potentially modifies the buffer
-  contents.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} Float32Array to the KaitaiStream backing buffer.
-  */
-KaitaiStream.prototype.mapFloat32Array = function(length, e) {
-  this._realloc(length * 4);
-  var arr = new Float32Array(this._buffer, this.byteOffset+this.position, length);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += length * 4;
-  return arr;
-};
-
-/**
-  Reads an Int32Array of desired length and endianness from the KaitaiStream.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} The read Int32Array.
- */
-KaitaiStream.prototype.readInt32Array = function(length, e) {
-  length = length == null ? (this.byteLength-this.position / 4) : length;
-  var arr = new Int32Array(length);
-  KaitaiStream.memcpy(arr.buffer, 0,
-                    this.buffer, this.byteOffset+this.position,
-                    length*arr.BYTES_PER_ELEMENT);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += arr.byteLength;
-  return arr;
-};
-
-/**
-  Reads an Int16Array of desired length and endianness from the KaitaiStream.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} The read Int16Array.
- */
-KaitaiStream.prototype.readInt16Array = function(length, e) {
-  length = length == null ? (this.byteLength-this.position / 2) : length;
-  var arr = new Int16Array(length);
-  KaitaiStream.memcpy(arr.buffer, 0,
-                    this.buffer, this.byteOffset+this.position,
-                    length*arr.BYTES_PER_ELEMENT);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += arr.byteLength;
-  return arr;
-};
-
-/**
-  Reads an Int8Array of desired length from the KaitaiStream.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} The read Int8Array.
- */
-KaitaiStream.prototype.readInt8Array = function(length) {
-  length = length == null ? (this.byteLength-this.position) : length;
-  var arr = new Int8Array(length);
-  KaitaiStream.memcpy(arr.buffer, 0,
-                    this.buffer, this.byteOffset+this.position,
-                    length*arr.BYTES_PER_ELEMENT);
-  this.position += arr.byteLength;
-  return arr;
-};
-
-/**
-  Reads a Uint32Array of desired length and endianness from the KaitaiStream.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} The read Uint32Array.
- */
-KaitaiStream.prototype.readUint32Array = function(length, e) {
-  length = length == null ? (this.byteLength-this.position / 4) : length;
-  var arr = new Uint32Array(length);
-  KaitaiStream.memcpy(arr.buffer, 0,
-                    this.buffer, this.byteOffset+this.position,
-                    length*arr.BYTES_PER_ELEMENT);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += arr.byteLength;
-  return arr;
-};
-
-/**
-  Reads a Uint16Array of desired length and endianness from the KaitaiStream.
-
-  @param {number} length Number of elements to map.
-  @param {?boolean} e Endianness of the data to read.
-  @return {Object} The read Uint16Array.
- */
-KaitaiStream.prototype.readUint16Array = function(length, e) {
-  length = length == null ? (this.byteLength-this.position / 2) : length;
-  var arr = new Uint16Array(length);
-  KaitaiStream.memcpy(arr.buffer, 0,
-                    this.buffer, this.byteOffset+this.position,
-                    length*arr.BYTES_PER_ELEMENT);
-  KaitaiStream.arrayToNative(arr, e == null ? this.endianness : e);
-  this.position += arr.byteLength;
-  return arr;
-};
-
-/**
   Reads a Uint8Array of desired length from the KaitaiStream.
 
   @param {number} length Number of elements to map.
@@ -712,21 +471,24 @@ KaitaiStream.flipArrayEndianness = function(array) {
   return array;
 };
 
-/**
-  Creates an array from an array of character codes.
-  Uses String.fromCharCode in chunks for memory efficiency and then concatenates
-  the resulting string chunks.
+// ========================================================================
+// Byte arrays
+// ========================================================================
 
-  @param {array} array Array of character codes.
-  @return {string} String created from the character codes.
-**/
-KaitaiStream.createStringFromArray = function(array) {
-  var chunk_size = 0x8000;
-  var chunks = [];
-  for (var i=0; i < array.length; i += chunk_size) {
-    chunks.push(String.fromCharCode.apply(null, array.subarray(i, i + chunk_size)));
-  }
-  return chunks.join("");
+KaitaiStream.prototype.readBytes = function(len) {
+  return this.mapUint8Array(len);
+}
+
+KaitaiStream.prototype.readBytesFull = function() {
+  return this.mapUint8Array(this.byteLength - this.position);
+}
+
+// ========================================================================
+// Strings
+// ========================================================================
+
+KaitaiStream.prototype.readStrEos = function(encoding) {
+  return KaitaiStream.arrayToString(this.readBytesFull(), encoding);
 };
 
 /**
@@ -739,34 +501,6 @@ KaitaiStream.createStringFromArray = function(array) {
  */
 KaitaiStream.prototype.readStrByteLimit = function(length, encoding) {
   return KaitaiStream.arrayToString(this.readBytes(length), encoding);
-};
-
-KaitaiStream.prototype.readStrEos = function(encoding) {
-  return KaitaiStream.arrayToString(this.readBytesFull(), encoding);
-};
-
-/**
-  Read null-terminated string of desired length from the KaitaiStream. Truncates
-  the returned string so that the null byte is not a part of it.
-
-  @param {?number} length The length of the string to read.
-  @return {string} The read string.
- */
-KaitaiStream.prototype.readCString = function(length) {
-  var blen = this.byteLength-this.position;
-  var u8 = new Uint8Array(this._buffer, this._byteOffset + this.position);
-  var len = blen;
-  if (length != null) {
-    len = Math.min(length, blen);
-  }
-  for (var i = 0; i < len && u8[i] != 0; i++); // find first zero byte
-  var s = KaitaiStream.createStringFromArray(this.mapUint8Array(i));
-  if (length != null) {
-    this.position += len-i;
-  } else if (i != blen) {
-    this.position += 1; // trailing zero if not at end of buffer
-  }
-  return s;
 };
 
 KaitaiStream.prototype.readStrz = function(encoding, terminator, include, consume, eosError) {
@@ -791,46 +525,6 @@ KaitaiStream.prototype.readStrz = function(encoding, terminator, include, consum
       this.position += 1;
     }
     return KaitaiStream.arrayToString(arr, encoding);
-  }
-}
-
-KaitaiStream.prototype.readBytes = function(len) {
-  return this.mapUint8Array(len);
-}
-
-KaitaiStream.prototype.readBytesFull = function() {
-  return this.mapUint8Array(this.byteLength - this.position);
-}
-
-KaitaiStream.arrayToString = function(arr, encoding) {
-  if (encoding == null || encoding == "ASCII") {
-    return KaitaiStream.createStringFromArray(arr);
-  } else {
-    if (typeof TextDecoder === 'function') {
-      // we're in the browser that supports TextDecoder
-      return (new TextDecoder(encoding)).decode(arr);
-    } else {
-      // probably we're in node.js
-
-      // check if it's supported natively by node.js Buffer
-      // see https://github.com/nodejs/node/blob/master/lib/buffer.js#L187 for details
-      switch (encoding.toLowerCase()) {
-        case 'utf8':
-        case 'utf-8':
-        case 'ucs2':
-        case 'ucs-2':
-        case 'utf16le':
-        case 'utf-16le':
-          return new Buffer(arr).toString(encoding);
-          break;
-        default:
-          // unsupported encoding, we'll have to resort to iconv-lite
-          if (typeof KaitaiStream.iconvlite === 'undefined')
-            KaitaiStream.iconvlite = require('iconv-lite');
-
-          return KaitaiStream.iconvlite.decode(arr, encoding);
-      }
-    }
   }
 }
 
@@ -884,6 +578,74 @@ KaitaiStream.processZlib = function(buf) {
   }
   var r = KaitaiStream.zlib.inflateSync(b);
   return r;
+}
+
+// ========================================================================
+// Internal implementation details
+// ========================================================================
+
+/**
+  Maps a Uint8Array into the KaitaiStream buffer.
+
+  Nice for quickly reading in data.
+
+  @param {number} length Number of elements to map.
+  @return {Object} Uint8Array to the KaitaiStream backing buffer.
+  */
+KaitaiStream.prototype.mapUint8Array = function(length) {
+  this._realloc(length * 1);
+  var arr = new Uint8Array(this._buffer, this.byteOffset+this.position, length);
+  this.position += length * 1;
+  return arr;
+};
+
+/**
+  Creates an array from an array of character codes.
+  Uses String.fromCharCode in chunks for memory efficiency and then concatenates
+  the resulting string chunks.
+
+  @param {array} array Array of character codes.
+  @return {string} String created from the character codes.
+**/
+KaitaiStream.createStringFromArray = function(array) {
+  var chunk_size = 0x8000;
+  var chunks = [];
+  for (var i=0; i < array.length; i += chunk_size) {
+    chunks.push(String.fromCharCode.apply(null, array.subarray(i, i + chunk_size)));
+  }
+  return chunks.join("");
+};
+
+KaitaiStream.arrayToString = function(arr, encoding) {
+  if (encoding == null || encoding == "ASCII") {
+    return KaitaiStream.createStringFromArray(arr);
+  } else {
+    if (typeof TextDecoder === 'function') {
+      // we're in the browser that supports TextDecoder
+      return (new TextDecoder(encoding)).decode(arr);
+    } else {
+      // probably we're in node.js
+
+      // check if it's supported natively by node.js Buffer
+      // see https://github.com/nodejs/node/blob/master/lib/buffer.js#L187 for details
+      switch (encoding.toLowerCase()) {
+        case 'utf8':
+        case 'utf-8':
+        case 'ucs2':
+        case 'ucs-2':
+        case 'utf16le':
+        case 'utf-16le':
+          return new Buffer(arr).toString(encoding);
+          break;
+        default:
+          // unsupported encoding, we'll have to resort to iconv-lite
+          if (typeof KaitaiStream.iconvlite === 'undefined')
+            KaitaiStream.iconvlite = require('iconv-lite');
+
+          return KaitaiStream.iconvlite.decode(arr, encoding);
+      }
+    }
+  }
 }
 
 // ========================================================================
