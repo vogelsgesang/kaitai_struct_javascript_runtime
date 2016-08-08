@@ -116,6 +116,20 @@ KaitaiStream.prototype._trimAlloc = function() {
   this.buffer = buf;
 };
 
+// ========================================================================
+// Stream positioning
+// ========================================================================
+
+/**
+  Returns true if the KaitaiStream seek pointer is at the end of buffer and
+  there's no more data to read.
+
+  @return {boolean} True if the seek pointer is at the end of the buffer.
+  */
+KaitaiStream.prototype.isEof = function() {
+  return (this.position >= this.byteLength);
+};
+
 /**
   Sets the KaitaiStream read/write position to given position.
   Clamps between 0 and KaitaiStream length.
@@ -126,16 +140,6 @@ KaitaiStream.prototype._trimAlloc = function() {
 KaitaiStream.prototype.seek = function(pos) {
   var npos = Math.max(0, Math.min(this.byteLength, pos));
   this.position = (isNaN(npos) || !isFinite(npos)) ? 0 : npos;
-};
-
-/**
-  Returns true if the KaitaiStream seek pointer is at the end of buffer and
-  there's no more data to read.
-
-  @return {boolean} True if the seek pointer is at the end of the buffer.
-  */
-KaitaiStream.prototype.isEof = function() {
-  return (this.position >= this.byteLength);
 };
 
 /**
