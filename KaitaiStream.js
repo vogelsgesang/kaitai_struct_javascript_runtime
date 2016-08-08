@@ -578,9 +578,13 @@ KaitaiStream.prototype.readU4be = function(e) {
 // Signed
 // ========================================================================
 
-// # Floating point numbers
+// ========================================================================
+// Floating point numbers
+// ========================================================================
 
-// ## Big endian
+// ------------------------------------------------------------------------
+// Big endian
+// ------------------------------------------------------------------------
 
 KaitaiStream.prototype.readF4be = function(e) {
   var v = this._dataView.getFloat32(this.position);
@@ -594,7 +598,9 @@ KaitaiStream.prototype.readF8be = function(e) {
   return v;
 };
 
-// ## Little endian
+// ------------------------------------------------------------------------
+// Little endian
+// ------------------------------------------------------------------------
 
 KaitaiStream.prototype.readF4le = function(e) {
   var v = this._dataView.getFloat32(this.position, 1);
@@ -828,6 +834,10 @@ KaitaiStream.arrayToString = function(arr, encoding) {
   }
 }
 
+// ========================================================================
+// Byte array processing
+// ========================================================================
+
 KaitaiStream.processXorOne = function(data, key) {
   var r = new Uint8Array(data.length);
   var dl = data.length;
@@ -850,18 +860,6 @@ KaitaiStream.processXorMany = function(data, key) {
   return r;
 }
 
-KaitaiStream.processZlib = function(buf) {
-  if (typeof KaitaiStream.zlib === 'undefined')
-    KaitaiStream.zlib = require('zlib');
-  if (buf instanceof Uint8Array) {
-    var b = new Buffer(buf.buffer);
-  } else {
-    var b = buf;
-  }
-  var r = KaitaiStream.zlib.inflateSync(b);
-  return r;
-}
-
 KaitaiStream.processRotateLeft = function(data, amount, groupSize) {
   if (groupSize != 1)
     throw("unable to rotate group of " + groupSize + " bytes yet");
@@ -875,6 +873,22 @@ KaitaiStream.processRotateLeft = function(data, amount, groupSize) {
 
   return r;
 }
+
+KaitaiStream.processZlib = function(buf) {
+  if (typeof KaitaiStream.zlib === 'undefined')
+    KaitaiStream.zlib = require('zlib');
+  if (buf instanceof Uint8Array) {
+    var b = new Buffer(buf.buffer);
+  } else {
+    var b = buf;
+  }
+  var r = KaitaiStream.zlib.inflateSync(b);
+  return r;
+}
+
+// ========================================================================
+// Mandatory footer: exports
+// ========================================================================
 
 // Export KaitaiStream for amd environments
 if (typeof define === 'function' && define.amd) {
