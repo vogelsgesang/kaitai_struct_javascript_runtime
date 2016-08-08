@@ -34,24 +34,6 @@ if (Uint8Array.prototype.BYTES_PER_ELEMENT === undefined) {
 }
 
 /**
-  Whether to extend KaitaiStream buffer when trying to write beyond its size.
-  If set, the buffer is reallocated to twice its current size until the
-  requested write fits the buffer.
-  @type {boolean}
-  */
-KaitaiStream.prototype._dynamicSize = true;
-Object.defineProperty(KaitaiStream.prototype, 'dynamicSize',
-  { get: function() {
-      return this._dynamicSize;
-    },
-    set: function(v) {
-      if (!v) {
-        this._trimAlloc();
-      }
-      this._dynamicSize = v;
-    } });
-
-/**
   Virtual byte length of the KaitaiStream backing buffer.
   Updated to be max of original buffer size and last written size.
   If dynamicSize is false is set to buffer size.
@@ -114,37 +96,6 @@ Object.defineProperty(KaitaiStream.prototype, 'dataView',
       this._dataView = new DataView(this._buffer, this._byteOffset);
       this._byteLength = this._byteOffset + v.byteLength;
     } });
-
-/**
-  Internal function to resize the KaitaiStream buffer when required.
-  @param {number} extra Number of bytes to add to the buffer allocation.
-  @return {null}
-  */
-KaitaiStream.prototype._realloc = function(extra) {
-  if (!this._dynamicSize) {
-    return;
-  }
-  var req = this._byteOffset + this.position + extra;
-  var blen = this._buffer.byteLength;
-  if (req <= blen) {
-    if (req > this._byteLength) {
-      this._byteLength = req;
-    }
-    return;
-  }
-  if (blen < 1) {
-    blen = 1;
-  }
-  while (req > blen) {
-    blen *= 2;
-  }
-  var buf = new ArrayBuffer(blen);
-  var src = new Uint8Array(this._buffer);
-  var dst = new Uint8Array(buf, 0, src.length);
-  dst.set(src);
-  this.buffer = buf;
-  this._byteLength = req;
-};
 
 /**
   Internal function to trim the KaitaiStream buffer when required.
@@ -584,6 +535,17 @@ KaitaiStream.processZlib = function(buf) {
 // Internal implementation details
 // ========================================================================
 
+KaitaiEOFError = function(bytesReq, bytesAvail) {
+  this.name = "KaitaiEOFError";
+  this.message = "requested " + bytesReq + " bytes, but only " + bytesAvail + " bytes available";
+  this.bytesReq = bytesReq;
+  this.bytesAvail = bytesAvail;
+  this.stack = (new Error()).stack;
+}
+
+KaitaiEOFError.prototype = Object.create(Error.prototype);
+KaitaiEOFError.prototype.constructor = KaitaiEOFError;
+
 /**
   Maps a Uint8Array into the KaitaiStream buffer.
 
@@ -593,9 +555,12 @@ KaitaiStream.processZlib = function(buf) {
   @return {Object} Uint8Array to the KaitaiStream backing buffer.
   */
 KaitaiStream.prototype.mapUint8Array = function(length) {
-  this._realloc(length * 1);
-  var arr = new Uint8Array(this._buffer, this.byteOffset+this.position, length);
-  this.position += length * 1;
+  if (this.position + length > this.byteLength) {
+    throw new KaitaiEOFError(length, this.byteLength - this.position);
+  }
+
+  var arr = new Uint8Array(this._buffer, this.byteOffset + this.position, length);
+  this.position += length;
   return arr;
 };
 
