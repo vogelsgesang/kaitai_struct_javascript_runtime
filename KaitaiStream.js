@@ -236,7 +236,18 @@ KaitaiStream.prototype.readU4be = function(e) {
   return v;
 };
 
-// TODO: do something about 64-bit integers
+/**
+  Reads a 64-bit big-endian unsigned int from the stream. Note that
+  JavaScript does not support 64-bit integers natively, so it will
+  automatically upgrade internal representation to use IEEE 754
+  double precision float.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readU8be = function(e) {
+  var v1 = this.readU4be();
+  var v2 = this.readU4be();
+  return 0x100000000 * v1 + v2;
+};
 
 // ........................................................................
 // Little-endian
@@ -262,7 +273,18 @@ KaitaiStream.prototype.readU4le = function(e) {
   return v;
 };
 
-// TODO: do something about 64-bit integers
+/**
+  Reads a 64-bit little-endian unsigned int from the stream. Note that
+  JavaScript does not support 64-bit integers natively, so it will
+  automatically upgrade internal representation to use IEEE 754
+  double precision float.
+  @return {number} The read number.
+ */
+KaitaiStream.prototype.readU8le = function(e) {
+  var v1 = this.readU4le();
+  var v2 = this.readU4le();
+  return 0x100000000 * v2 + v1;
+};
 
 // ========================================================================
 // Signed
