@@ -380,11 +380,11 @@ KaitaiStream.prototype.readBytesFull = function() {
 
 KaitaiStream.prototype.ensureFixedContents = function(len, expected) {
   var actual = this.readBytes(len);
-  if (actual.length != expected.length) {
+  if (actual.length !== expected.length) {
     throw new KaitaiUnexpectedDataError(expected, actual);
   }
-  var len = actual.length;
-  for (var i = 0; i < len; i++) {
+  var actLen = actual.length;
+  for (var i = 0; i < actLen; i++) {
     if (actual[i] != expected[i]) {
       throw new KaitaiUnexpectedDataError(expected, actual);
     }
