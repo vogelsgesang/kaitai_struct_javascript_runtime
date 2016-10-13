@@ -582,6 +582,15 @@ KaitaiStream.arrayToString = function(arr, encoding) {
   }
 }
 
+KaitaiStream.mod = function(a, b) {
+  if (b <= 0)
+    throw "mod divisor <= 0";
+  var r = a % b;
+  if (r < 0)
+    r += b;
+  return r;
+}
+
 // ========================================================================
 // Mandatory footer: exports
 // ========================================================================
