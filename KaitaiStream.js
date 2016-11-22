@@ -378,8 +378,8 @@ KaitaiStream.prototype.readBytesFull = function() {
   return this.mapUint8Array(this.size - this.pos);
 }
 
-KaitaiStream.prototype.ensureFixedContents = function(len, expected) {
-  var actual = this.readBytes(len);
+KaitaiStream.prototype.ensureFixedContents = function(expected) {
+  var actual = this.readBytes(expected.length);
   if (actual.length !== expected.length) {
     throw new KaitaiUnexpectedDataError(expected, actual);
   }
