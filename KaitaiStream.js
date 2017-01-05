@@ -18,6 +18,8 @@ KaitaiStream = function(arrayBuffer, byteOffset) {
     this.buffer = new ArrayBuffer(arrayBuffer || 1);
   }
   this.pos = 0;
+  this.bitsLeft = 0;
+  this.bits = 0;
 };
 KaitaiStream.prototype = {};
 
@@ -357,6 +359,45 @@ KaitaiStream.prototype.readF8le = function(e) {
   this.pos += 8;
   return v;
 };
+
+// ------------------------------------------------------------------------
+// Unaligned bit values
+// ------------------------------------------------------------------------
+
+KaitaiStream.prototype.readBitsInt = function(n) {
+    if (n > 31)
+        throw new Error(`readBitsInt: the maximum supported bit length is 31 (tried to read ${n} bits)`);
+    
+    var bitsNeeded = n - this.bitsLeft;
+    if (bitsNeeded > 0) {
+        // 1 bit  => 1 byte
+        // 8 bits => 1 byte
+        // 9 bits => 2 bytes
+        var bytesNeeded = Math.ceil(bitsNeeded / 8);
+        var buf = this.readBytes(bytesNeeded);
+        for (var i = 0; i < buf.length; i++) {
+            // do NOT use << 8 in JS because it will convert `bits` to signed int32
+            this.bits *= 256;
+            this.bits |= buf[i];
+            this.bitsLeft += 8;
+        }
+    }
+
+    // raw mask with required number of 1s, starting from lowest bit
+    // this is why we only allow reading 31 bits, 1 << 32 is 1 in JS
+    var mask = (1 << n) - 1
+    // shift mask to align with highest bits available in this.bits
+    var shiftBits = this.bitsLeft - n;
+    mask <<= shiftBits;
+    // derive reading result
+    var res = (this.bits & mask) >>> shiftBits;
+    // clear top bits that we've just read => AND with 1s
+    this.bitsLeft -= n;
+    mask = (1 << this.bitsLeft) - 1;
+    this.bits &= mask;
+
+    return res;
+}
 
 /**
   Native endianness. Either KaitaiStream.BIG_ENDIAN or KaitaiStream.LITTLE_ENDIAN
