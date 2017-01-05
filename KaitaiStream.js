@@ -365,8 +365,9 @@ KaitaiStream.prototype.readF8le = function(e) {
 // ------------------------------------------------------------------------
 
 KaitaiStream.prototype.readBitsInt = function(n) {
-    if (n > 31)
-        throw new Error(`readBitsInt: the maximum supported bit length is 31 (tried to read ${n} bits)`);
+    // JS only supports bit operations on 32 bits
+    if (n > 32)
+        throw new Error(`readBitsInt: the maximum supported bit length is 32 (tried to read ${n} bits)`);
     
     var bitsNeeded = n - this.bitsLeft;
     if (bitsNeeded > 0) {
@@ -376,16 +377,14 @@ KaitaiStream.prototype.readBitsInt = function(n) {
         var bytesNeeded = Math.ceil(bitsNeeded / 8);
         var buf = this.readBytes(bytesNeeded);
         for (var i = 0; i < buf.length; i++) {
-            // do NOT use << 8 in JS because it will convert `bits` to signed int32
-            this.bits *= 256;
+            this.bits <<= 8;
             this.bits |= buf[i];
             this.bitsLeft += 8;
         }
     }
 
     // raw mask with required number of 1s, starting from lowest bit
-    // this is why we only allow reading 31 bits, 1 << 32 is 1 in JS
-    var mask = (1 << n) - 1
+    var mask = n == 32 ? 0xffffffff : (1 << n) - 1;
     // shift mask to align with highest bits available in this.bits
     var shiftBits = this.bitsLeft - n;
     mask <<= shiftBits;
