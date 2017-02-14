@@ -422,6 +422,31 @@ KaitaiStream.prototype.readBytesFull = function() {
   return this.mapUint8Array(this.size - this.pos);
 }
 
+KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eosError) {
+  var blen = this.size - this.pos;
+  var u8 = new Uint8Array(this._buffer, this._byteOffset + this.pos);
+  for (var i = 0; i < blen && u8[i] != terminator; i++); // find first zero byte
+  if (i == blen) {
+    // we've read all the buffer and haven't found the terminator
+    if (eosError) {
+      throw "End of stream reached, but no terminator " + term + " found";
+    } else {
+      return this.mapUint8Array(i);
+    }
+  } else {
+    var arr;
+    if (include) {
+      arr = this.mapUint8Array(i + 1);
+    } else {
+      arr = this.mapUint8Array(i);
+    }
+    if (consume) {
+      this.pos += 1;
+    }
+    return arr;
+  }
+}
+
 KaitaiStream.prototype.ensureFixedContents = function(expected) {
   var actual = this.readBytes(expected.length);
   if (actual.length !== expected.length) {
@@ -434,51 +459,6 @@ KaitaiStream.prototype.ensureFixedContents = function(expected) {
     }
   }
   return actual;
-}
-
-// ========================================================================
-// Strings
-// ========================================================================
-
-KaitaiStream.prototype.readStrEos = function(encoding) {
-  return KaitaiStream.arrayToString(this.readBytesFull(), encoding);
-};
-
-/**
-  Read a string of desired length and encoding from the KaitaiStream.
-
-  @param {number} length The length of the string to read in bytes.
-  @param {?string} encoding The encoding of the string data in the KaitaiStream.
-                            Defaults to ASCII.
-  @return {string} The read string.
- */
-KaitaiStream.prototype.readStrByteLimit = function(length, encoding) {
-  return KaitaiStream.arrayToString(this.readBytes(length), encoding);
-};
-
-KaitaiStream.prototype.readStrz = function(encoding, terminator, include, consume, eosError) {
-  var blen = this.size - this.pos;
-  var u8 = new Uint8Array(this._buffer, this._byteOffset + this.pos);
-  for (var i = 0; i < blen && u8[i] != terminator; i++); // find first zero byte
-  if (i == blen) {
-    // we've read all the buffer and haven't found the terminator
-    if (eosError) {
-      throw "End of stream reached, but no terminator " + term + " found";
-    } else {
-      return KaitaiStream.arrayToString(this.mapUint8Array(i), encoding);
-    }
-  } else {
-    var arr;
-    if (include) {
-      arr = this.mapUint8Array(i + 1);
-    } else {
-      arr = this.mapUint8Array(i);
-    }
-    if (consume) {
-      this.pos += 1;
-    }
-    return KaitaiStream.arrayToString(arr, encoding);
-  }
 }
 
 // ========================================================================
