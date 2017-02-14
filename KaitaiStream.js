@@ -461,6 +461,38 @@ KaitaiStream.prototype.ensureFixedContents = function(expected) {
   return actual;
 }
 
+KaitaiStream.bytesToStr = function(arr, encoding) {
+  if (encoding == null || encoding == "ASCII") {
+    return KaitaiStream.createStringFromArray(arr);
+  } else {
+    if (typeof TextDecoder === 'function') {
+      // we're in the browser that supports TextDecoder
+      return (new TextDecoder(encoding)).decode(arr);
+    } else {
+      // probably we're in node.js
+
+      // check if it's supported natively by node.js Buffer
+      // see https://github.com/nodejs/node/blob/master/lib/buffer.js#L187 for details
+      switch (encoding.toLowerCase()) {
+        case 'utf8':
+        case 'utf-8':
+        case 'ucs2':
+        case 'ucs-2':
+        case 'utf16le':
+        case 'utf-16le':
+          return new Buffer(arr).toString(encoding);
+          break;
+        default:
+          // unsupported encoding, we'll have to resort to iconv-lite
+          if (typeof KaitaiStream.iconvlite === 'undefined')
+            KaitaiStream.iconvlite = require('iconv-lite');
+
+          return KaitaiStream.iconvlite.decode(arr, encoding);
+      }
+    }
+  }
+}
+
 // ========================================================================
 // Byte array processing
 // ========================================================================
@@ -510,6 +542,19 @@ KaitaiStream.processZlib = function(buf) {
     var b = buf;
   }
   var r = KaitaiStream.zlib.inflateSync(b);
+  return r;
+}
+
+// ========================================================================
+// Misc runtime operations
+// ========================================================================
+
+KaitaiStream.mod = function(a, b) {
+  if (b <= 0)
+    throw "mod divisor <= 0";
+  var r = a % b;
+  if (r < 0)
+    r += b;
   return r;
 }
 
@@ -573,47 +618,6 @@ KaitaiStream.createStringFromArray = function(array) {
   }
   return chunks.join("");
 };
-
-KaitaiStream.arrayToString = function(arr, encoding) {
-  if (encoding == null || encoding == "ASCII") {
-    return KaitaiStream.createStringFromArray(arr);
-  } else {
-    if (typeof TextDecoder === 'function') {
-      // we're in the browser that supports TextDecoder
-      return (new TextDecoder(encoding)).decode(arr);
-    } else {
-      // probably we're in node.js
-
-      // check if it's supported natively by node.js Buffer
-      // see https://github.com/nodejs/node/blob/master/lib/buffer.js#L187 for details
-      switch (encoding.toLowerCase()) {
-        case 'utf8':
-        case 'utf-8':
-        case 'ucs2':
-        case 'ucs-2':
-        case 'utf16le':
-        case 'utf-16le':
-          return new Buffer(arr).toString(encoding);
-          break;
-        default:
-          // unsupported encoding, we'll have to resort to iconv-lite
-          if (typeof KaitaiStream.iconvlite === 'undefined')
-            KaitaiStream.iconvlite = require('iconv-lite');
-
-          return KaitaiStream.iconvlite.decode(arr, encoding);
-      }
-    }
-  }
-}
-
-KaitaiStream.mod = function(a, b) {
-  if (b <= 0)
-    throw "mod divisor <= 0";
-  var r = a % b;
-  if (r < 0)
-    r += b;
-  return r;
-}
 
 // ========================================================================
 // Mandatory footer: exports
