@@ -575,6 +575,26 @@ KaitaiStream.mod = function(a, b) {
   return r;
 }
 
+KaitaiStream.arrayMin = function(arr) {
+  var min = arr[0];
+  var x;
+  for (var i = 1, n = arr.length; i < n; ++i) {
+    x = arr[i];
+    if (x < min) min = x;
+  }
+  return min;
+}
+
+KaitaiStream.arrayMax = function(arr) {
+  var max = arr[0];
+  var x;
+  for (var i = 1, n = arr.length; i < n; ++i) {
+    x = arr[i];
+    if (x > max) max = x;
+  }
+  return max;
+}
+
 // ========================================================================
 // Internal implementation details
 // ========================================================================
