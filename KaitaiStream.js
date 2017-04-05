@@ -1,3 +1,4 @@
+// -*- mode: js; js-indent-level: 2; -*-
 /**
   KaitaiStream is an implementation of Kaitai Struct API for JavaScript.
   Based on DataStream - https://github.com/kig/DataStream.js
