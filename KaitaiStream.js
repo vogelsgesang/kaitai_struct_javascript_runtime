@@ -596,6 +596,26 @@ KaitaiStream.arrayMax = function(arr) {
   return max;
 }
 
+KaitaiStream.byteArrayCompare = function(a, b) {
+  if (a === b)
+    return 0;
+  var al = a.length;
+  var bl = b.length;
+  var minLen = al < bl ? al : bl;
+  for (var i = 0; i < minLen; i++) {
+    var cmp = a[i] - b[i];
+    if (cmp != 0)
+      return cmp;
+  }
+
+  // Reached the end of at least one of the arrays
+  if (al == bl) {
+    return 0;
+  } else {
+    return al - bl;
+  }
+}
+
 // ========================================================================
 // Internal implementation details
 // ========================================================================
