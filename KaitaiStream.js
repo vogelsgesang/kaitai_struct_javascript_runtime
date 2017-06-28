@@ -373,7 +373,7 @@ KaitaiStream.prototype.readBitsInt = function(n) {
   // JS only supports bit operations on 32 bits
   if (n > 32)
     throw new Error(`readBitsInt: the maximum supported bit length is 32 (tried to read ${n} bits)`);
-    
+
   var bitsNeeded = n - this.bitsLeft;
   if (bitsNeeded > 0) {
     // 1 bit  => 1 byte
