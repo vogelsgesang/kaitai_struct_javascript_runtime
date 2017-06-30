@@ -1,4 +1,14 @@
 // -*- mode: js; js-indent-level: 2; -*-
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.KaitaiStream = factory();
+  }
+}(this, function () {
+
 /**
   KaitaiStream is an implementation of Kaitai Struct API for JavaScript.
   Based on DataStream - https://github.com/kig/DataStream.js
@@ -6,7 +16,7 @@
   @param {ArrayBuffer} arrayBuffer ArrayBuffer to read from.
   @param {?Number} byteOffset Offset from arrayBuffer beginning for the KaitaiStream.
   */
-KaitaiStream = function(arrayBuffer, byteOffset) {
+var KaitaiStream = function(arrayBuffer, byteOffset) {
   this._byteOffset = byteOffset || 0;
   if (arrayBuffer instanceof ArrayBuffer) {
     this.buffer = arrayBuffer;
@@ -620,7 +630,7 @@ KaitaiStream.byteArrayCompare = function(a, b) {
 // Internal implementation details
 // ========================================================================
 
-KaitaiEOFError = function(bytesReq, bytesAvail) {
+var KaitaiEOFError = KaitaiStream.KaitaiEOFError = function(bytesReq, bytesAvail) {
   this.name = "KaitaiEOFError";
   this.message = "requested " + bytesReq + " bytes, but only " + bytesAvail + " bytes available";
   this.bytesReq = bytesReq;
@@ -631,7 +641,7 @@ KaitaiEOFError = function(bytesReq, bytesAvail) {
 KaitaiEOFError.prototype = Object.create(Error.prototype);
 KaitaiEOFError.prototype.constructor = KaitaiEOFError;
 
-KaitaiUnexpectedDataError = function(expected, actual) {
+var KaitaiUnexpectedDataError = KaitaiStream.KaitaiUnexpectedDataError = function(expected, actual) {
   this.name = "KaitaiUnexpectedDataError";
   this.message = "expected [" + expected + "], but got [" + actual + "]";
   this.expected = expected;
@@ -642,7 +652,7 @@ KaitaiUnexpectedDataError = function(expected, actual) {
 KaitaiUnexpectedDataError.prototype = Object.create(Error.prototype);
 KaitaiUnexpectedDataError.prototype.constructor = KaitaiUnexpectedDataError;
 
-KaitaiUndecidedEndiannessError = function() {
+var KaitaiUndecidedEndiannessError = KaitaiStream.KaitaiUndecidedEndiannessError = function() {
   this.name = "KaitaiUndecidedEndiannessError";
   this.stack = (new Error()).stack;
 }
@@ -685,18 +695,6 @@ KaitaiStream.createStringFromArray = function(array) {
   return chunks.join("");
 };
 
-// ========================================================================
-// Mandatory footer: exports
-// ========================================================================
+return KaitaiStream;
 
-// Export KaitaiStream for amd environments
-if (typeof define === 'function' && define.amd) {
-  define('KaitaiStream', [], function() {
-    return KaitaiStream;
-  });
-}
-
-// Export KaitaiStream for CommonJS
-if (typeof module === 'object' && module && module.exports) {
-  module.exports = KaitaiStream;
-}
+}));
