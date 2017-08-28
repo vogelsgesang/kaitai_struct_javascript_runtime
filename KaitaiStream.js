@@ -669,6 +669,8 @@ UndecidedEndiannessError.prototype.constructor = UndecidedEndiannessError;
   @return {Object} Uint8Array to the KaitaiStream backing buffer.
   */
 KaitaiStream.prototype.mapUint8Array = function(length) {
+  length |= 0;
+
   if (this.pos + length > this.size) {
     throw new EOFError(length, this.size - this.pos);
   }
