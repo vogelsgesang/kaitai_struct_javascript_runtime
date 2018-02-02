@@ -440,7 +440,7 @@ KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eo
   if (i == blen) {
     // we've read all the buffer and haven't found the terminator
     if (eosError) {
-      throw "End of stream reached, but no terminator " + term + " found";
+      throw "End of stream reached, but no terminator " + terminator + " found";
     } else {
       return this.mapUint8Array(i);
     }
