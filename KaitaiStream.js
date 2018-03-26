@@ -508,7 +508,7 @@ KaitaiStream.bytesTerminate = function(data, term, include) {
 }
 
 KaitaiStream.bytesToStr = function(arr, encoding) {
-  if (encoding == null || encoding == "ASCII") {
+  if (encoding == null || encoding.toLowerCase() == "ascii") {
     return KaitaiStream.createStringFromArray(arr);
   } else {
     if (typeof TextDecoder === 'function') {
