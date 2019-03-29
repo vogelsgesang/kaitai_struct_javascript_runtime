@@ -136,7 +136,7 @@ KaitaiStream.prototype._trimAlloc = function() {
   @return {boolean} True if the seek pointer is at the end of the buffer.
   */
 KaitaiStream.prototype.isEof = function() {
-  return (this.pos >= this.size);
+  return this.pos >= this.size && this.bitsLeft == 0;
 };
 
 /**
