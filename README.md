@@ -10,7 +10,7 @@ Further reading:
 
 * [About Kaitai Struct](http://kaitai.io/)
 * [About API implemented in this library](http://doc.kaitai.io/stream_api.html)
-* [JavaScript-specific notes](http://doc.kaitai.io/lang_javascript.html)
+* [JavaScript-specific notes](http://doc.kaitai.io/lang_javascript.html) - also includes Quick start guide
 
 ## Licensing
 
