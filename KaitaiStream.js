@@ -476,6 +476,7 @@ KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eo
   }
 }
 
+// Unused since Kaitai Struct Compiler v0.9+ - compatibility with older versions
 KaitaiStream.prototype.ensureFixedContents = function(expected) {
   var actual = this.readBytes(expected.length);
   if (actual.length !== expected.length) {
@@ -675,6 +676,7 @@ var EOFError = KaitaiStream.EOFError = function(bytesReq, bytesAvail) {
 EOFError.prototype = Object.create(Error.prototype);
 EOFError.prototype.constructor = EOFError;
 
+// Unused since Kaitai Struct Compiler v0.9+ - compatibility with older versions
 var UnexpectedDataError = KaitaiStream.UnexpectedDataError = function(expected, actual) {
   this.name = "UnexpectedDataError";
   this.message = "expected [" + expected + "], but got [" + actual + "]";
@@ -693,6 +695,17 @@ var UndecidedEndiannessError = KaitaiStream.UndecidedEndiannessError = function(
 
 UndecidedEndiannessError.prototype = Object.create(Error.prototype);
 UndecidedEndiannessError.prototype.constructor = UndecidedEndiannessError;
+
+var ValidationNotEqualError = KaitaiStream.ValidationNotEqualError = function(expected, actual) {
+  this.name = "ValidationNotEqualError";
+  this.message = "expected [" + expected + "], but got [" + actual + "]";
+  this.expected = expected;
+  this.actual = actual;
+  this.stack = (new Error()).stack;
+}
+
+ValidationNotEqualError.prototype = Object.create(Error.prototype);
+ValidationNotEqualError.prototype.constructor = ValidationNotEqualError;
 
 /**
   Maps a Uint8Array into the KaitaiStream buffer.
