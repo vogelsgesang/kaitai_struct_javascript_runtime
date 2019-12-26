@@ -716,7 +716,7 @@ UndecidedEndiannessError.prototype.constructor = UndecidedEndiannessError;
 
 var ValidationNotEqualError = KaitaiStream.ValidationNotEqualError = function(expected, actual) {
   this.name = "ValidationNotEqualError";
-  this.message = "expected [" + expected + "], but got [" + actual + "]";
+  this.message = "not equal, expected [" + expected + "], but got [" + actual + "]";
   this.expected = expected;
   this.actual = actual;
   this.stack = (new Error()).stack;
@@ -724,6 +724,28 @@ var ValidationNotEqualError = KaitaiStream.ValidationNotEqualError = function(ex
 
 ValidationNotEqualError.prototype = Object.create(Error.prototype);
 ValidationNotEqualError.prototype.constructor = ValidationNotEqualError;
+
+var ValidationLessThanError = KaitaiStream.ValidationLessThanError = function(min, actual) {
+  this.name = "ValidationLessThanError";
+  this.message = "not in range, min [" + min + "], but got [" + actual + "]";
+  this.min = min;
+  this.actual = actual;
+  this.stack = (new Error()).stack;
+}
+
+ValidationLessThanError.prototype = Object.create(Error.prototype);
+ValidationLessThanError.prototype.constructor = ValidationLessThanError;
+
+var ValidationGreaterThanError = KaitaiStream.ValidationGreaterThanError = function(max, actual) {
+  this.name = "ValidationGreaterThanError";
+  this.message = "not in range, max [" + max + "], but got [" + actual + "]";
+  this.max = max;
+  this.actual = actual;
+  this.stack = (new Error()).stack;
+}
+
+ValidationGreaterThanError.prototype = Object.create(Error.prototype);
+ValidationGreaterThanError.prototype.constructor = ValidationGreaterThanError;
 
 /**
   Ensures that we have an least `length` bytes left in the stream.
