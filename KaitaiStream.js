@@ -788,8 +788,9 @@ KaitaiStream.prototype.mapUint8Array = function(length) {
 KaitaiStream.createStringFromArray = function(array) {
   var chunk_size = 0x8000;
   var chunks = [];
+  var useSubarray = typeof array.subarray === 'function';
   for (var i=0; i < array.length; i += chunk_size) {
-    chunks.push(String.fromCharCode.apply(null, array.subarray(i, i + chunk_size)));
+    chunks.push(String.fromCharCode.apply(null, useSubarray ? array.subarray(i, i + chunk_size) : array.slice(i, i + chunk_size)));
   }
   return chunks.join("");
 };
