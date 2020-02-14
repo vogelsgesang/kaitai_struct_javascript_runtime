@@ -747,6 +747,16 @@ var ValidationGreaterThanError = KaitaiStream.ValidationGreaterThanError = funct
 ValidationGreaterThanError.prototype = Object.create(Error.prototype);
 ValidationGreaterThanError.prototype.constructor = ValidationGreaterThanError;
 
+var ValidationNotAnyOfError = KaitaiStream.ValidationNotAnyOfError = function(actual, io, srcPath) {
+  this.name = "ValidationNotAnyOfError";
+  this.message = "not any of the list, got [" + actual + "]";
+  this.actual = actual;
+  this.stack = (new Error()).stack;
+}
+
+ValidationNotAnyOfError.prototype = Object.create(Error.prototype);
+ValidationNotAnyOfError.prototype.constructor = ValidationNotAnyOfError;
+
 /**
   Ensures that we have an least `length` bytes left in the stream.
   If that's not true, throws an EOFError.
