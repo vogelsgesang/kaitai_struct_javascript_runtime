@@ -217,7 +217,7 @@ KaitaiStream.prototype.readS8be = function(e) {
   var v1 = this.readU4be();
   var v2 = this.readU4be();
 
-  if (v1 & 0x80000000 != 0) {
+  if ((v1 & 0x80000000) != 0) {
     // negative number
     return -(0x100000000 * (v1 ^ 0xffffffff) + (v2 ^ 0xffffffff)) - 1;
   } else {
@@ -263,7 +263,7 @@ KaitaiStream.prototype.readS8le = function(e) {
   var v1 = this.readU4le();
   var v2 = this.readU4le();
 
-  if (v2 & 0x80000000 != 0) {
+  if ((v2 & 0x80000000) != 0) {
     // negative number
     return -(0x100000000 * (v2 ^ 0xffffffff) + (v1 ^ 0xffffffff)) - 1;
   } else {
