@@ -604,7 +604,9 @@ KaitaiStream.processZlib = function(buf) {
     if (typeof KaitaiStream.zlib === 'undefined')
       KaitaiStream.zlib = require('zlib');
     // use node's zlib module API
-    var r = KaitaiStream.zlib.inflateSync(buf);
+    var r = KaitaiStream.zlib.inflateSync(
+      Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength)
+    );
     return r;
   } else {
     // no require() - assume we're running as a web worker in browser.
