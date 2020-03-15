@@ -603,13 +603,8 @@ KaitaiStream.processZlib = function(buf) {
     // require is available - we're running under node
     if (typeof KaitaiStream.zlib === 'undefined')
       KaitaiStream.zlib = require('zlib');
-    if (buf instanceof Uint8Array) {
-      var b = new Buffer(buf.buffer);
-    } else {
-      var b = buf;
-    }
     // use node's zlib module API
-    var r = KaitaiStream.zlib.inflateSync(b);
+    var r = KaitaiStream.zlib.inflateSync(buf);
     return r;
   } else {
     // no require() - assume we're running as a web worker in browser.
