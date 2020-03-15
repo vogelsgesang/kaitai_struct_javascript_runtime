@@ -605,7 +605,7 @@ KaitaiStream.processZlib = function(buf) {
       KaitaiStream.zlib = require('zlib');
     // use node's zlib module API
     var r = KaitaiStream.zlib.inflateSync(
-      Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength)
+      Buffer.from(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
     );
     return r;
   } else {
