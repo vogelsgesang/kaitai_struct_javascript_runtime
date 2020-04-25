@@ -413,7 +413,7 @@ KaitaiStream.prototype.readF8le = function(e) {
 KaitaiStream.prototype.alignToByte = function() {
   this.bits = 0;
   this.bitsLeft = 0;
-}
+};
 
 KaitaiStream.prototype.readBitsIntBe = function(n) {
   // JS only supports bit operations on 32 bits
@@ -447,7 +447,7 @@ KaitaiStream.prototype.readBitsIntBe = function(n) {
   this.bits &= mask;
 
   return res;
-}
+};
 
 /**
  * Unused since Kaitai Struct Compiler v0.9+ - compatibility with older versions
@@ -483,7 +483,7 @@ KaitaiStream.prototype.readBitsIntLe = function(n) {
   this.bitsLeft -= n;
 
   return res;
-}
+};
 
 /**
   Native endianness. Either KaitaiStream.BIG_ENDIAN or KaitaiStream.LITTLE_ENDIAN
@@ -499,11 +499,11 @@ KaitaiStream.endianness = new Int8Array(new Int16Array([1]).buffer)[0] > 0;
 
 KaitaiStream.prototype.readBytes = function(len) {
   return this.mapUint8Array(len);
-}
+};
 
 KaitaiStream.prototype.readBytesFull = function() {
   return this.mapUint8Array(this.size - this.pos);
-}
+};
 
 KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eosError) {
   var blen = this.size - this.pos;
@@ -528,7 +528,7 @@ KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eo
     }
     return arr;
   }
-}
+};
 
 // Unused since Kaitai Struct Compiler v0.9+ - compatibility with older versions
 KaitaiStream.prototype.ensureFixedContents = function(expected) {
@@ -543,14 +543,14 @@ KaitaiStream.prototype.ensureFixedContents = function(expected) {
     }
   }
   return actual;
-}
+};
 
 KaitaiStream.bytesStripRight = function(data, padByte) {
   var newLen = data.length;
   while (data[newLen - 1] == padByte)
     newLen--;
   return data.slice(0, newLen);
-}
+};
 
 KaitaiStream.bytesTerminate = function(data, term, include) {
   var newLen = 0;
@@ -560,7 +560,7 @@ KaitaiStream.bytesTerminate = function(data, term, include) {
   if (include && newLen < maxLen)
     newLen++;
   return data.slice(0, newLen);
-}
+};
 
 KaitaiStream.bytesToStr = function(arr, encoding) {
   if (encoding == null || encoding.toLowerCase() == "ascii") {
@@ -592,7 +592,7 @@ KaitaiStream.bytesToStr = function(arr, encoding) {
       }
     }
   }
-}
+};
 
 // ========================================================================
 // Byte array processing
@@ -604,7 +604,7 @@ KaitaiStream.processXorOne = function(data, key) {
   for (var i = 0; i < dl; i++)
     r[i] = data[i] ^ key;
   return r;
-}
+};
 
 KaitaiStream.processXorMany = function(data, key) {
   var r = new Uint8Array(data.length);
@@ -618,7 +618,7 @@ KaitaiStream.processXorMany = function(data, key) {
       ki = 0;
   }
   return r;
-}
+};
 
 KaitaiStream.processRotateLeft = function(data, amount, groupSize) {
   if (groupSize != 1)
@@ -632,7 +632,7 @@ KaitaiStream.processRotateLeft = function(data, amount, groupSize) {
     r[i] = (data[i] << amount) & 0xff | (data[i] >> antiAmount);
 
   return r;
-}
+};
 
 KaitaiStream.processZlib = function(buf) {
   if (typeof require !== 'undefined')  {
@@ -657,7 +657,7 @@ KaitaiStream.processZlib = function(buf) {
     r = KaitaiStream.zlib.inflate(buf);
     return r;
   }
-}
+};
 
 // ========================================================================
 // Misc runtime operations
@@ -670,7 +670,7 @@ KaitaiStream.mod = function(a, b) {
   if (r < 0)
     r += b;
   return r;
-}
+};
 
 KaitaiStream.arrayMin = function(arr) {
   var min = arr[0];
@@ -680,7 +680,7 @@ KaitaiStream.arrayMin = function(arr) {
     if (x < min) min = x;
   }
   return min;
-}
+};
 
 KaitaiStream.arrayMax = function(arr) {
   var max = arr[0];
@@ -690,7 +690,7 @@ KaitaiStream.arrayMax = function(arr) {
     if (x > max) max = x;
   }
   return max;
-}
+};
 
 KaitaiStream.byteArrayCompare = function(a, b) {
   if (a === b)
@@ -710,7 +710,7 @@ KaitaiStream.byteArrayCompare = function(a, b) {
   } else {
     return al - bl;
   }
-}
+};
 
 // ========================================================================
 // Internal implementation details
@@ -722,7 +722,7 @@ var EOFError = KaitaiStream.EOFError = function(bytesReq, bytesAvail) {
   this.bytesReq = bytesReq;
   this.bytesAvail = bytesAvail;
   this.stack = (new Error()).stack;
-}
+};
 
 EOFError.prototype = Object.create(Error.prototype);
 EOFError.prototype.constructor = EOFError;
@@ -734,7 +734,7 @@ var UnexpectedDataError = KaitaiStream.UnexpectedDataError = function(expected, 
   this.expected = expected;
   this.actual = actual;
   this.stack = (new Error()).stack;
-}
+};
 
 UnexpectedDataError.prototype = Object.create(Error.prototype);
 UnexpectedDataError.prototype.constructor = UnexpectedDataError;
@@ -742,7 +742,7 @@ UnexpectedDataError.prototype.constructor = UnexpectedDataError;
 var UndecidedEndiannessError = KaitaiStream.UndecidedEndiannessError = function() {
   this.name = "UndecidedEndiannessError";
   this.stack = (new Error()).stack;
-}
+};
 
 UndecidedEndiannessError.prototype = Object.create(Error.prototype);
 UndecidedEndiannessError.prototype.constructor = UndecidedEndiannessError;
@@ -753,7 +753,7 @@ var ValidationNotEqualError = KaitaiStream.ValidationNotEqualError = function(ex
   this.expected = expected;
   this.actual = actual;
   this.stack = (new Error()).stack;
-}
+};
 
 ValidationNotEqualError.prototype = Object.create(Error.prototype);
 ValidationNotEqualError.prototype.constructor = ValidationNotEqualError;
@@ -764,7 +764,7 @@ var ValidationLessThanError = KaitaiStream.ValidationLessThanError = function(mi
   this.min = min;
   this.actual = actual;
   this.stack = (new Error()).stack;
-}
+};
 
 ValidationLessThanError.prototype = Object.create(Error.prototype);
 ValidationLessThanError.prototype.constructor = ValidationLessThanError;
@@ -775,7 +775,7 @@ var ValidationGreaterThanError = KaitaiStream.ValidationGreaterThanError = funct
   this.max = max;
   this.actual = actual;
   this.stack = (new Error()).stack;
-}
+};
 
 ValidationGreaterThanError.prototype = Object.create(Error.prototype);
 ValidationGreaterThanError.prototype.constructor = ValidationGreaterThanError;
@@ -785,7 +785,7 @@ var ValidationNotAnyOfError = KaitaiStream.ValidationNotAnyOfError = function(ac
   this.message = "not any of the list, got [" + actual + "]";
   this.actual = actual;
   this.stack = (new Error()).stack;
-}
+};
 
 ValidationNotAnyOfError.prototype = Object.create(Error.prototype);
 ValidationNotAnyOfError.prototype.constructor = ValidationNotAnyOfError;
@@ -800,7 +800,7 @@ KaitaiStream.prototype.ensureBytesLeft = function(length) {
   if (this.pos + length > this.size) {
     throw new EOFError(length, this.size - this.pos);
   }
-}
+};
 
 /**
   Maps a Uint8Array into the KaitaiStream buffer.
