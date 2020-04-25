@@ -115,7 +115,7 @@ Object.defineProperty(KaitaiStream.prototype, 'dataView',
   @return {null}
   */
 KaitaiStream.prototype._trimAlloc = function() {
-  if (this._byteLength == this._buffer.byteLength) {
+  if (this._byteLength === this._buffer.byteLength) {
     return;
   }
   var buf = new ArrayBuffer(this._byteLength);
@@ -136,7 +136,7 @@ KaitaiStream.prototype._trimAlloc = function() {
   @return {boolean} True if the seek pointer is at the end of the buffer.
   */
 KaitaiStream.prototype.isEof = function() {
-  return this.pos >= this.size && this.bitsLeft == 0;
+  return this.pos >= this.size && this.bitsLeft === 0;
 };
 
 /**
@@ -217,7 +217,7 @@ KaitaiStream.prototype.readS8be = function(e) {
   var v1 = this.readU4be();
   var v2 = this.readU4be();
 
-  if ((v1 & 0x80000000) != 0) {
+  if ((v1 & 0x80000000) !== 0) {
     // negative number
     return -(0x100000000 * (v1 ^ 0xffffffff) + (v2 ^ 0xffffffff)) - 1;
   } else {
@@ -263,7 +263,7 @@ KaitaiStream.prototype.readS8le = function(e) {
   var v1 = this.readU4le();
   var v2 = this.readU4le();
 
-  if ((v2 & 0x80000000) != 0) {
+  if ((v2 & 0x80000000) !== 0) {
     // negative number
     return -(0x100000000 * (v2 ^ 0xffffffff) + (v1 ^ 0xffffffff)) - 1;
   } else {
@@ -435,7 +435,7 @@ KaitaiStream.prototype.readBitsIntBe = function(n) {
   }
 
   // raw mask with required number of 1s, starting from lowest bit
-  var mask = n == 32 ? 0xffffffff : (1 << n) - 1;
+  var mask = n === 32 ? 0xffffffff : (1 << n) - 1;
   // shift mask to align with highest bits available in this.bits
   var shiftBits = this.bitsLeft - n;
   mask <<= shiftBits;
@@ -475,7 +475,7 @@ KaitaiStream.prototype.readBitsIntLe = function(n) {
   }
 
   // raw mask with required number of 1s, starting from lowest bit
-  var mask = n == 32 ? 0xffffffff : (1 << n) - 1;
+  var mask = n === 32 ? 0xffffffff : (1 << n) - 1;
   // derive reading result
   var res = this.bits & mask;
   // remove bottom bits that we've just read by shifting
@@ -508,8 +508,8 @@ KaitaiStream.prototype.readBytesFull = function() {
 KaitaiStream.prototype.readBytesTerm = function(terminator, include, consume, eosError) {
   var blen = this.size - this.pos;
   var u8 = new Uint8Array(this._buffer, this._byteOffset + this.pos);
-  for (var i = 0; i < blen && u8[i] != terminator; i++); // find first zero byte
-  if (i == blen) {
+  for (var i = 0; i < blen && u8[i] !== terminator; i++); // find first zero byte
+  if (i === blen) {
     // we've read all the buffer and haven't found the terminator
     if (eosError) {
       throw "End of stream reached, but no terminator " + terminator + " found";
@@ -538,7 +538,7 @@ KaitaiStream.prototype.ensureFixedContents = function(expected) {
   }
   var actLen = actual.length;
   for (var i = 0; i < actLen; i++) {
-    if (actual[i] != expected[i]) {
+    if (actual[i] !== expected[i]) {
       throw new UnexpectedDataError(expected, actual);
     }
   }
@@ -547,7 +547,7 @@ KaitaiStream.prototype.ensureFixedContents = function(expected) {
 
 KaitaiStream.bytesStripRight = function(data, padByte) {
   var newLen = data.length;
-  while (data[newLen - 1] == padByte)
+  while (data[newLen - 1] === padByte)
     newLen--;
   return data.slice(0, newLen);
 };
@@ -555,7 +555,7 @@ KaitaiStream.bytesStripRight = function(data, padByte) {
 KaitaiStream.bytesTerminate = function(data, term, include) {
   var newLen = 0;
   var maxLen = data.length;
-  while (newLen < maxLen && data[newLen] != term)
+  while (newLen < maxLen && data[newLen] !== term)
     newLen++;
   if (include && newLen < maxLen)
     newLen++;
@@ -563,7 +563,7 @@ KaitaiStream.bytesTerminate = function(data, term, include) {
 };
 
 KaitaiStream.bytesToStr = function(arr, encoding) {
-  if (encoding == null || encoding.toLowerCase() == "ascii") {
+  if (encoding == null || encoding.toLowerCase() === "ascii") {
     return KaitaiStream.createStringFromArray(arr);
   } else {
     if (typeof TextDecoder === 'function') {
@@ -621,7 +621,7 @@ KaitaiStream.processXorMany = function(data, key) {
 };
 
 KaitaiStream.processRotateLeft = function(data, amount, groupSize) {
-  if (groupSize != 1)
+  if (groupSize !== 1)
     throw("unable to rotate group of " + groupSize + " bytes yet");
 
   var mask = groupSize * 8 - 1;
@@ -700,12 +700,12 @@ KaitaiStream.byteArrayCompare = function(a, b) {
   var minLen = al < bl ? al : bl;
   for (var i = 0; i < minLen; i++) {
     var cmp = a[i] - b[i];
-    if (cmp != 0)
+    if (cmp !== 0)
       return cmp;
   }
 
   // Reached the end of at least one of the arrays
-  if (al == bl) {
+  if (al === bl) {
     return 0;
   } else {
     return al - bl;
