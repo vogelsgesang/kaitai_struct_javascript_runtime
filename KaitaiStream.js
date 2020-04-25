@@ -236,7 +236,7 @@ KaitaiStream.prototype.readS8be = function() {
  */
 KaitaiStream.prototype.readS2le = function() {
   this.ensureBytesLeft(2);
-  var v = this._dataView.getInt16(this.pos, 1);
+  var v = this._dataView.getInt16(this.pos, true);
   this.pos += 2;
   return v;
 };
@@ -247,7 +247,7 @@ KaitaiStream.prototype.readS2le = function() {
  */
 KaitaiStream.prototype.readS4le = function() {
   this.ensureBytesLeft(4);
-  var v = this._dataView.getInt32(this.pos, 1);
+  var v = this._dataView.getInt32(this.pos, true);
   this.pos += 4;
   return v;
 };
@@ -337,7 +337,7 @@ KaitaiStream.prototype.readU8be = function() {
  */
 KaitaiStream.prototype.readU2le = function() {
   this.ensureBytesLeft(2);
-  var v = this._dataView.getUint16(this.pos, 1);
+  var v = this._dataView.getUint16(this.pos, true);
   this.pos += 2;
   return v;
 };
@@ -348,7 +348,7 @@ KaitaiStream.prototype.readU2le = function() {
  */
 KaitaiStream.prototype.readU4le = function() {
   this.ensureBytesLeft(4);
-  var v = this._dataView.getUint32(this.pos, 1);
+  var v = this._dataView.getUint32(this.pos, true);
   this.pos += 4;
   return v;
 };
@@ -395,14 +395,14 @@ KaitaiStream.prototype.readF8be = function() {
 
 KaitaiStream.prototype.readF4le = function() {
   this.ensureBytesLeft(4);
-  var v = this._dataView.getFloat32(this.pos, 1);
+  var v = this._dataView.getFloat32(this.pos, true);
   this.pos += 4;
   return v;
 };
 
 KaitaiStream.prototype.readF8le = function() {
   this.ensureBytesLeft(8);
-  var v = this._dataView.getFloat64(this.pos, 1);
+  var v = this._dataView.getFloat64(this.pos, true);
   this.pos += 8;
   return v;
 };
