@@ -608,11 +608,11 @@ KaitaiStream.processXorOne = function(data, key) {
 };
 
 KaitaiStream.processXorMany = function(data, key) {
-  var r = new Uint8Array(data.length);
   var dl = data.length;
+  var r = new Uint8Array(dl);
   var kl = key.length;
   var ki = 0;
-  for (var i = 0; i < data.length; i++) {
+  for (var i = 0; i < dl; i++) {
     r[i] = data[i] ^ key[ki];
     ki++;
     if (ki >= kl)
