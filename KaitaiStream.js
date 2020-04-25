@@ -826,7 +826,7 @@ KaitaiStream.prototype.mapUint8Array = function(length) {
   Uses String.fromCharCode in chunks for memory efficiency and then concatenates
   the resulting string chunks.
 
-  @param {array} array Array of character codes.
+  @param {array|Uint8Array} array Array of character codes.
   @return {string} String created from the character codes.
 **/
 KaitaiStream.createStringFromArray = function(array) {
