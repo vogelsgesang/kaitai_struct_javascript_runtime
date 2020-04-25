@@ -188,7 +188,7 @@ KaitaiStream.prototype.readS1 = function() {
   Reads a 16-bit big-endian signed int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS2be = function(e) {
+KaitaiStream.prototype.readS2be = function() {
   this.ensureBytesLeft(2);
   var v = this._dataView.getInt16(this.pos);
   this.pos += 2;
@@ -199,7 +199,7 @@ KaitaiStream.prototype.readS2be = function(e) {
   Reads a 32-bit big-endian signed int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS4be = function(e) {
+KaitaiStream.prototype.readS4be = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getInt32(this.pos);
   this.pos += 4;
@@ -213,7 +213,7 @@ KaitaiStream.prototype.readS4be = function(e) {
   double precision float.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS8be = function(e) {
+KaitaiStream.prototype.readS8be = function() {
   this.ensureBytesLeft(8);
   var v1 = this.readU4be();
   var v2 = this.readU4be();
@@ -234,7 +234,7 @@ KaitaiStream.prototype.readS8be = function(e) {
   Reads a 16-bit little-endian signed int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS2le = function(e) {
+KaitaiStream.prototype.readS2le = function() {
   this.ensureBytesLeft(2);
   var v = this._dataView.getInt16(this.pos, 1);
   this.pos += 2;
@@ -245,7 +245,7 @@ KaitaiStream.prototype.readS2le = function(e) {
   Reads a 32-bit little-endian signed int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS4le = function(e) {
+KaitaiStream.prototype.readS4le = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getInt32(this.pos, 1);
   this.pos += 4;
@@ -259,7 +259,7 @@ KaitaiStream.prototype.readS4le = function(e) {
   double precision float.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readS8le = function(e) {
+KaitaiStream.prototype.readS8le = function() {
   this.ensureBytesLeft(8);
   var v1 = this.readU4le();
   var v2 = this.readU4le();
@@ -295,7 +295,7 @@ KaitaiStream.prototype.readU1 = function() {
   Reads a 16-bit big-endian unsigned int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU2be = function(e) {
+KaitaiStream.prototype.readU2be = function() {
   this.ensureBytesLeft(2);
   var v = this._dataView.getUint16(this.pos);
   this.pos += 2;
@@ -306,7 +306,7 @@ KaitaiStream.prototype.readU2be = function(e) {
   Reads a 32-bit big-endian unsigned int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU4be = function(e) {
+KaitaiStream.prototype.readU4be = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getUint32(this.pos);
   this.pos += 4;
@@ -320,7 +320,7 @@ KaitaiStream.prototype.readU4be = function(e) {
   double precision float.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU8be = function(e) {
+KaitaiStream.prototype.readU8be = function() {
   this.ensureBytesLeft(8);
   var v1 = this.readU4be();
   var v2 = this.readU4be();
@@ -335,7 +335,7 @@ KaitaiStream.prototype.readU8be = function(e) {
   Reads a 16-bit little-endian unsigned int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU2le = function(e) {
+KaitaiStream.prototype.readU2le = function() {
   this.ensureBytesLeft(2);
   var v = this._dataView.getUint16(this.pos, 1);
   this.pos += 2;
@@ -346,7 +346,7 @@ KaitaiStream.prototype.readU2le = function(e) {
   Reads a 32-bit little-endian unsigned int from the stream.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU4le = function(e) {
+KaitaiStream.prototype.readU4le = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getUint32(this.pos, 1);
   this.pos += 4;
@@ -360,7 +360,7 @@ KaitaiStream.prototype.readU4le = function(e) {
   double precision float.
   @return {number} The read number.
  */
-KaitaiStream.prototype.readU8le = function(e) {
+KaitaiStream.prototype.readU8le = function() {
   this.ensureBytesLeft(8);
   var v1 = this.readU4le();
   var v2 = this.readU4le();
@@ -375,14 +375,14 @@ KaitaiStream.prototype.readU8le = function(e) {
 // Big endian
 // ------------------------------------------------------------------------
 
-KaitaiStream.prototype.readF4be = function(e) {
+KaitaiStream.prototype.readF4be = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getFloat32(this.pos);
   this.pos += 4;
   return v;
 };
 
-KaitaiStream.prototype.readF8be = function(e) {
+KaitaiStream.prototype.readF8be = function() {
   this.ensureBytesLeft(8);
   var v = this._dataView.getFloat64(this.pos);
   this.pos += 8;
@@ -393,14 +393,14 @@ KaitaiStream.prototype.readF8be = function(e) {
 // Little endian
 // ------------------------------------------------------------------------
 
-KaitaiStream.prototype.readF4le = function(e) {
+KaitaiStream.prototype.readF4le = function() {
   this.ensureBytesLeft(4);
   var v = this._dataView.getFloat32(this.pos, 1);
   this.pos += 4;
   return v;
 };
 
-KaitaiStream.prototype.readF8le = function(e) {
+KaitaiStream.prototype.readF8le = function() {
   this.ensureBytesLeft(8);
   var v = this._dataView.getFloat64(this.pos, 1);
   this.pos += 8;
