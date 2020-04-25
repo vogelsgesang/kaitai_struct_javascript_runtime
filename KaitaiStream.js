@@ -415,11 +415,11 @@ KaitaiStream.prototype.alignToByte = function() {
   this.bitsLeft = 0;
 }
 
-KaitaiStream.prototype.readBitsInt = function(n) {
+KaitaiStream.prototype.readBitsIntBe = function(n) {
   // JS only supports bit operations on 32 bits
-  if (n > 32)
-    throw new Error(`readBitsInt: the maximum supported bit length is 32 (tried to read ${n} bits)`);
-
+  if (n > 32) {
+    throw new Error(`readBitsIntBe: the maximum supported bit length is 32 (tried to read ${n} bits)`);
+  }
   var bitsNeeded = n - this.bitsLeft;
   if (bitsNeeded > 0) {
     // 1 bit  => 1 byte
@@ -427,7 +427,7 @@ KaitaiStream.prototype.readBitsInt = function(n) {
     // 9 bits => 2 bytes
     var bytesNeeded = Math.ceil(bitsNeeded / 8);
     var buf = this.readBytes(bytesNeeded);
-    for (var i = 0; i < buf.length; i++) {
+    for (var i = 0; i < bytesNeeded; i++) {
       this.bits <<= 8;
       this.bits |= buf[i];
       this.bitsLeft += 8;
@@ -445,6 +445,42 @@ KaitaiStream.prototype.readBitsInt = function(n) {
   this.bitsLeft -= n;
   mask = (1 << this.bitsLeft) - 1;
   this.bits &= mask;
+
+  return res;
+}
+
+/**
+ * Unused since Kaitai Struct Compiler v0.9+ - compatibility with older versions
+ *
+ * @deprecated use {@link readBitsIntBe} instead
+ */
+KaitaiStream.prototype.readBitsInt = KaitaiStream.prototype.readBitsIntBe;
+
+KaitaiStream.prototype.readBitsIntLe = function(n) {
+  // JS only supports bit operations on 32 bits
+  if (n > 32) {
+    throw new Error(`readBitsIntLe: the maximum supported bit length is 32 (tried to read ${n} bits)`);
+  }
+  var bitsNeeded = n - this.bitsLeft;
+  if (bitsNeeded > 0) {
+      // 1 bit  => 1 byte
+      // 8 bits => 1 byte
+      // 9 bits => 2 bytes
+      var bytesNeeded = Math.ceil(bitsNeeded / 8);
+      var buf = this.readBytes(bytesNeeded);
+      for (var i = 0; i < bytesNeeded; i++) {
+          this.bits |= (buf[i] << this.bitsLeft);
+          this.bitsLeft += 8;
+      }
+  }
+
+  // raw mask with required number of 1s, starting from lowest bit
+  var mask = n == 32 ? 0xffffffff : (1 << n) - 1;
+  // derive reading result
+  var res = this.bits & mask;
+  // remove bottom bits that we've just read by shifting
+  this.bits >>= n;
+  this.bitsLeft -= n;
 
   return res;
 }
