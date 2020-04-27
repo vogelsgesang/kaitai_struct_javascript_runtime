@@ -437,11 +437,9 @@ KaitaiStream.prototype.readBitsIntBe = function(n) {
 
   // raw mask with required number of 1s, starting from lowest bit
   var mask = n === 32 ? 0xffffffff : (1 << n) - 1;
-  // shift mask to align with highest bits available in this.bits
+  // shift this.bits to align the highest bits with the mask & derive reading result
   var shiftBits = this.bitsLeft - n;
-  mask <<= shiftBits;
-  // derive reading result
-  var res = (this.bits & mask) >>> shiftBits;
+  var res = (this.bits >>> shiftBits) & mask;
   // clear top bits that we've just read => AND with 1s
   this.bitsLeft -= n;
   mask = (1 << this.bitsLeft) - 1;
